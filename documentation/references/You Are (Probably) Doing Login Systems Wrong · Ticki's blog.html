@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)http://ticki.github.io/blog/you-are-probably-doing-login-systems-wrong/ -->
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <meta property="og:title" content=" You Are (Probably) Doing Login Systems Wrong ·  Ticki&#39;s blog">
+        <meta property="og:site_name" content="Ticki&#39;s blog">
+        <meta property="og:url" content="http://ticki.github.io/blog/you-are-probably-doing-login-systems-wrong/">
+
+    
+        <meta property="og:type" content="article">
+        <meta property="og:article:published_time" content="2017-05-12T00:00:00Z">
+        <meta property="og:article:tag" content="design">
+        <meta property="og:article:tag" content="cryptography">
+        
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@ticki_">
+        <meta name="twitter:creator" content="@ticki_">
+        <meta name="twitter:title" content="You Are (Probably) Doing Login Systems Wrong">
+        <meta name="twitter:description" content="This blog post details various ideas to create a secure login system.">
+        <meta name="twitter:url" content="http://ticki.github.io/blog/you-are-probably-doing-login-systems-wrong/">
+    
+
+        <title> You Are (Probably) Doing Login Systems Wrong ·  Ticki's blog</title>
+
+    
+        <meta name="description" content="This blog post details various ideas to create a secure login system.">
+    
+
+        <meta name="p:domain_verify" content="fc173d84e3a4de948ed4bda2908afd3e">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        
+        
+
+    
+        <link href="http://ticki.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Ticki&#39;s blog">
+    
+
+    
+        <link rel="canonical" href="http://ticki.github.io/blog/you-are-probably-doing-login-systems-wrong/">
+
+    
+    <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "You Are (Probably) Doing Login Systems Wrong",
+        "author": {
+            "@type": "Person",
+            "name": "http://profiles.google.com/?rel=author"
+        },
+        "datePublished": "2017-05-12",
+        "description": "This blog post details various ideas to create a secure login system.",
+        "wordCount":  934 
+    }
+
+    </script>
+
+    <script type="text/javascript">
+    
+    
+      var disqus_shortname = 'http-ticki-github-io';
+      var disqus_identifier = 'http:\/\/ticki.github.io\/blog\/you-are-probably-doing-login-systems-wrong\/';
+      var disqus_title = 'You Are (Probably) Doing Login Systems Wrong';
+      var disqus_url = 'http:\/\/ticki.github.io\/blog\/you-are-probably-doing-login-systems-wrong\/';
+    
+
+    </script>
+    
+
+    <style>
+@charset "UTF-8";article,header,img,main,nav,section{display:block}blockquote,p,pre,ul{margin:2em auto}#wrapper,pre{width:100%;box-sizing:border-box}#nav,#wrapper,code{position:relative}#nav,body{background:#fff}#menu,blockquote,pre code{background:0 0}#menu,#menu .menu-header,#menu .menu-list,#wrapper,.post-nav .post-nav-item .post-nav-teaser .post-nav-info,blockquote,pre{box-sizing:border-box}img{border:0;max-width:100%;height:auto;margin:2.5em auto}html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}code,pre{font-family:monospace,monospace;font-size:1em}@font-face{font-family:'Merriweather Sans';font-style:normal;font-weight:300;src:local("Merriweather Sans Light"),local("MerriweatherSans-Light"),url(//fonts.gstatic.com/s/merriweathersans/v5/6LmGj5dOJopQKEkt88GowY_zIojJi0m4a5Z6tRh6itY.woff) format("woff")}@font-face{font-family:'Merriweather Sans';font-style:normal;font-weight:400;src:local("Merriweather Sans Regular"),local("MerriweatherSans-Regular"),url(//fonts.gstatic.com/s/merriweathersans/v5/AKu1CjQ4qnV8MUltkAX3sL2aU247V0zTzydO4RoO9Ok.woff) format("woff")}@font-face{font-family:'Merriweather Sans';font-style:normal;font-weight:700;src:local("Merriweather Sans Bold"),local("MerriweatherSans-Bold"),url(//fonts.gstatic.com/s/merriweathersans/v5/6LmGj5dOJopQKEkt88GowQfd-b-I5PxxcmB4_-MNcqw.woff) format("woff")}@font-face{font-family:'Merriweather Sans';font-style:normal;font-weight:800;src:local("Merriweather Sans ExtraBold"),local("MerriweatherSans-ExtraBold"),url(//fonts.gstatic.com/s/merriweathersans/v5/6LmGj5dOJopQKEkt88GowWT7sFQ1Iz1BbpcuCPlgc9Q.woff) format("woff")}@font-face{font-family:'Merriweather Sans';font-style:italic;font-weight:300;src:local("Merriweather Sans Light Italic"),local("MerriweatherSans-LightItalic"),url(//fonts.gstatic.com/s/merriweathersans/v5/nAqt4hiqwq3tzCecpgPmVX9UU5BmOJGkLxUCVv5VXdc.woff) format("woff")}@font-face{font-family:'Merriweather Sans';font-style:italic;font-weight:400;src:local("Merriweather Sans Italic"),local("MerriweatherSans-Italic"),url(//fonts.gstatic.com/s/merriweathersans/v5/3Mz4hOHzs2npRMG3B1ascf0KIgDhPIHb_R-SWdtqte8.woff) format("woff")}@font-face{font-family:'Merriweather Sans';font-style:italic;font-weight:700;src:local("Merriweather Sans Bold Italic"),local("MerriweatherSans-BoldItalic"),url(//fonts.gstatic.com/s/merriweathersans/v5/nAqt4hiqwq3tzCecpgPmVYM8pfYvjMoOxygpzLVILAs.woff) format("woff")}@font-face{font-family:Inconsolata;font-style:normal;font-weight:400;src:local("Inconsolata"),url(//fonts.gstatic.com/s/inconsolata/v12/BjAYBlHtW3CJxDcjzrnZCIbN6UDyHWBl620a-IRfuBk.woff) format("woff")}@font-face{font-family:Inconsolata;font-style:normal;font-weight:700;src:local("Inconsolata Bold"),local("Inconsolata-Bold"),url(//fonts.gstatic.com/s/inconsolata/v12/AIed271kqQlcIRSOnQH0yTqR_3kx9_hJXbbyU8S6IN0.woff) format("woff")}@font-face{font-family:icons;src:url(/fonts/icons.eot?9273991);src:url(/fonts/icons.eot?9273991#iefix) format("embedded-opentype"),url(/fonts/icons.woff?9273991) format("woff"),url(/fonts/icons.ttf?9273991) format("truetype"),url(/fonts/icons.svg?9273991#icons) format("svg");font-weight:400;font-style:normal}[class^=icon-]:before{font-family:icons;font-style:normal;font-weight:400;speak:none;display:inline-block;text-decoration:inherit;width:1em;margin-right:.2em;text-align:center;font-variant:normal;text-transform:none;line-height:1em;margin-left:.2em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.icon-arrow-left:before{content:'\e804'}.icon-arrow-right:before{content:'\e807'}.icon-rss:before{content:'\e808'}.icon-menu:before{content:'\e809'}body{margin:0;font:300 1em/1.5em 'Merriweather Sans',sans-serif;color:#595B66}blockquote,i{font-style:italic}code,pre{font-family:Inconsolata,monospace}a,blockquote,code,i{font-weight:400}::-moz-selection{color:#222;background:#D6EDFF;text-shadow:none}::-moz-selection,::selection{color:#222;background:#D6EDFF;text-shadow:none}a{background-color:transparent;color:inherit;text-decoration:none;transition:all ease-out .2s}.post-content a{border-bottom:2px solid #36D995}h1,h4{text-rendering:optimizeLegibility;color:#1F2026}h1{font-size:2em;line-height:1em;margin:2em 0 -.5em}h4{font-size:1.25em;line-height:1.2em;margin:2.4em 0 -.8em}ul{list-style:none;padding-left:3em}blockquote{padding:0 1em;border-left:.25em solid #D4D5D9;color:#595B66}blockquote *{margin:1em auto}blockquote :first-child{margin-top:0}blockquote :last-child{margin-bottom:0}i{color:#363740}code{display:inline-block;top:-1px;padding:3px 6px;margin:-1px 2px;font-size:.875em;line-height:1.143em;background:#E1E2E6;color:#000;border-radius:2px}pre{padding:1em;white-space:pre;overflow:auto;background:#9D9FA6;color:#fff}pre code{position:static;top:auto;font-size:1em;line-height:1.5em;white-space:-moz-pre-wrap;white-space:pre-wrap;vertical-align:inherit;border:none;padding:0}#menu .menu-header:before,.post .post-title:before{border-bottom:4px solid #36D995;content:''}.inner{max-width:48em;margin:0 auto;padding:0 1em}#wrapper{min-height:100vh;padding-bottom:6em;background:#F2F3F5}#push{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);-webkit-transform-style:preserve-3d;transform-style:preserve-3d;opacity:1}#nav{z-index:70;transition:all ease-out .4s;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);-webkit-transform-style:preserve-3d;transform-style:preserve-3d;opacity:1}#nav:after{clear:both;content:'';display:table}#nav .nav-logo{float:left;height:2em;padding:1em;max-width:50%}#nav .nav-logo img{width:auto;max-width:none;height:2em;margin:0}#nav .nav-menu{float:right}#nav .nav-menu:after{clear:both;content:'';display:table}#nav .nav-menu a{display:block;width:1em;height:1em;line-height:1em;padding:1.5em;text-align:center;float:left;cursor:pointer}#nav .nav-menu a i:before{margin:auto}#menu{display:none;position:fixed;left:50%;top:5%;width:30em;height:90%;margin-left:-15em;padding:3em 0 0;overflow:hidden;transition:all ease-out .3s;-webkit-transform:translate3d(0,2em,0);transform:translate3d(0,2em,0);-webkit-transform-style:preserve-3d;transform-style:preserve-3d;opacity:0;z-index:100}@media only screen and (max-width:50em){#menu{width:90%;left:5%;margin-left:auto}}#menu .menu-header{position:absolute;left:0;top:0;width:100%;height:3.5em;padding:1em 1.5em .5em;margin-bottom:1em;line-height:2em;z-index:110;background:#fff}#menu .menu-header:before{position:absolute;left:-5%;bottom:-1em;width:110%;height:2em;background:#fff;box-shadow:0 .125em .125em rgba(0,0,0,.1);-webkit-transform:rotate(2.5deg);transform:rotate(2.5deg);transition:all ease-out .2s;z-index:115}#menu .menu-header:after{clear:both;content:'';display:table}#menu .menu-header .menu-label{position:relative;display:block;float:left;z-index:120}#menu .menu-header .menu-close{position:relative;display:block;float:right;width:2em;height:2em;padding:1em;margin:-1em -1.5em -1em 0;cursor:pointer;z-index:125}#menu .menu-header .menu-close:after,#menu .menu-header .menu-close:before{content:'';position:absolute;left:50%;top:50%;background:#9D9FA6;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.overlay,.overlay:before{top:0;width:100%;height:100%}#menu .menu-header .menu-close:after{width:2px;height:1em;margin:-.5em 0 0 -1px}#menu .menu-header .menu-close:before{width:1em;height:2px;margin:-1px 0 0 -.5em}#menu .menu-list{position:relative;list-style:none;margin:0;padding:2em 0;height:100%;overflow-x:hidden;overflow-y:scroll;background:#fff}.overlay{position:fixed;left:0;z-index:80;display:none}.overlay:before{content:'';position:absolute;left:0;background:#1F2026;opacity:0;transition:all ease-out .3s;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}.post{position:relative;z-index:20}.post .post-meta{display:block;font-size:.75em;line-height:1.334em;font-weight:400;margin-bottom:1.334em}.post .post-title{position:relative;color:#000;font-size:2em;line-height:1.375em;font-weight:800;text-indent:-1px;margin:.25em 0 .75em}.post .post-title:before{position:absolute;left:0;bottom:-.334em;width:1em;margin-bottom:-2px}.post .post-header{padding:4em 0 0;margin-bottom:3em}.post-footer .post-share a span{display:none}.post-nav .post-nav-item{position:fixed;top:50%;display:block;margin-top:-4em;overflow:hidden;border-radius:10em;transition:none}@media only screen and (max-width:70em){.post-nav .post-nav-item{position:absolute;top:auto;margin:auto;max-width:50%}}.post-nav .post-nav-item.post-nav-next{left:0;text-align:left}.post-nav .post-nav-item.post-nav-next .post-nav-icon{float:left}.post-nav .post-nav-item.post-nav-next .post-nav-icon i{left:-.05em}.post-nav .post-nav-item.post-nav-next .post-nav-info{padding-left:6em}.post-nav .post-nav-item.post-nav-prev{right:0;text-align:right}.post-nav .post-nav-item.post-nav-prev .post-nav-icon{float:right}.post-nav .post-nav-item.post-nav-prev .post-nav-icon i{right:-.05em}.post-nav .post-nav-item.post-nav-prev .post-nav-info{padding-right:6em}.post-nav .post-nav-item .post-nav-teaser{display:block;padding:1em;transition:all ease-out .2s;max-width:25em;overflow:visible}.post-nav .post-nav-item .post-nav-teaser:after{clear:both;content:'';display:table}.post-nav .post-nav-item .post-nav-teaser .post-nav-icon{display:block;width:5em;height:5em;line-height:5em;text-align:center;box-sizing:border-box;border-radius:10em;border:1px solid #36D995;box-shadow:0 0 0 0 transparent;transition:all ease-out .1s;background:#F2F3F5}.post-nav .post-nav-item .post-nav-teaser .post-nav-icon i{position:relative;font-size:2em}@media only screen and (max-width:30em){.post-nav .post-nav-item .post-nav-teaser .post-nav-icon{width:4em;height:4em;line-height:4em}.post-nav .post-nav-item .post-nav-teaser .post-nav-icon i{font-size:1.5em}}.post-nav .post-nav-item .post-nav-teaser .post-nav-icon i:before{margin:auto}.post-nav .post-nav-item .post-nav-teaser .post-nav-info{display:none;width:100%;transition:all ease-out .2s}.post-nav .post-nav-item .post-nav-teaser .post-nav-info .post-nav-title{display:block;max-height:1.25em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin:1.25em 0 .25em;font-size:1em;line-height:1.25em;font-weight:700;color:#363740}.post-nav .post-nav-item .post-nav-teaser .post-nav-info .post-nav-excerpt{display:block;max-height:1.334em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin:0;font-size:.75em;line-height:1.334em;font-weight:400;color:#9D9FA6}
+</style>
+
+
+    <script type="text/javascript" async="" src="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/dependencies.js.download"></script><link type="text/css" rel="stylesheet" href="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/dependencies.css"><link type="text/css" rel="stylesheet" href="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/style.css"><script type="text/javascript" async="" src="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/script.js.download"></script><style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style><link rel="prefetch" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.953a2bd009935f47a8e815c3ee2bfc5a.css"><link rel="prefetch" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.bdf2715fe3d262793670748c6697b1f3.js"><link rel="prefetch" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.df4113f81691d4ed6cccc5b74c6c17e8.js"><link rel="prefetch" as="script" href="https://disqus.com/next/config.js"><script src="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/alfie.f51946af45e0b561c60f768335c9eb79.js.download" async="" charset="UTF-8"></script></head>
+    <body class="home-template" style="">
+      <section id="wrapper">
+        <div id="ajax-container">
+          <nav id="nav" class="nav">
+            <div class="nav-logo">
+              <a href="http://ticki.github.io/" class="js-ajax-link">
+      			  	
+      			  	
+      			  	<img src="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/logo.png" alt="Logo">
+      			  	
+              </a>
+			  	    
+            </div>
+            <div class="nav-menu">
+              <a class="menu" href="https://twitter.com/ticki_"><i class="icon-twitter"></i></a>
+              <a class="rss" href="http://ticki.github.io/blog/you-are-probably-doing-login-systems-wrong/">
+                <i class="icon-rss"></i>
+              </a>
+                
+                <a class="menu" data-action="toc" data-target="toc"><i class="icon-location"></i></a>
+                
+                
+                <a class="menu" data-action="menu" data-target="menu"><i class="icon-menu"></i></a>
+                
+            </div>
+          </nav>
+
+
+<main class="content" role="main">
+	<article class="post">
+		<div class="inner">
+
+			<div id="push">
+
+  			<header class="post-header">
+  				<span class="post-meta">
+						<span class="post-date">12 May 2017</span> <span class="reading-time">| <span class="estimated-reading-time">5 min.</span> (<span class="word-count">934</span> words)</span></span>
+  				
+  				<div class="clear"></div>
+  				<h1 class="post-title">You Are (Probably) Doing Login Systems Wrong</h1>
+  			</header>
+
+  			<section class="post-content">
+  				<p>A thing, most programmers have tried at least once, is login systems. Despite
+being seemingly a simple task, it is in fact very hard to do right.</p>
+
+<p>So, let's look into, how we can actually do this right.</p>
+
+<h1 id="storing-passwords">Storing passwords</h1>
+
+<p>Okay, this is common knowledge: Salt and hash your passwords.</p>
+
+<p>However, it is often done wrong. You'll see code like:</p>
+
+<pre class="codeblock"><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">hash</span><span class="hljs-params">(password + salt)</span></span>
+</code><div class="lines"><span class="line">1</span></div></pre>
+
+<p>This is better than unsalted, unhashed passwords, but it's far from bruteforce
+resistant. Why? Because hashing is cheap. With proper machines, you can do
+billions of them in a second. A dictionary attack is piece of cake.</p>
+
+<p>So how do we solve this? Well, we use a KDF. A KDF (key derivation function)
+acts like a slow hash function. A hash function, where calculating takes maybe
+100 ms. or more.</p>
+
+<p>In general, two kinds of KDFs exists, the CPU-based and the CPU-memory hybrids.
+The CPU based are still in use, but I don't recommend using them, as they can
+easily be calculated with ASICs. The CPU-memory hybrids requires some amount of
+memory for calculating the hash value, often making it substantially harder to
+create ASICs.</p>
+
+<p>For the reasons stated above, I recommend <code>scrypt</code>, for a modern, well-known
+an secure KDF.</p>
+
+<h1 id="sessions">Sessions</h1>
+
+<p>In general, sessions should be assigned a token by the server. This token is
+shared with the client (e.g. through a cookie) as the way to prove, that they
+are logged in with a given account to the server.</p>
+
+<p>There is a few things to keep in mind, though.</p>
+
+<p>The session token shall have an expiration date, for security reasons.
+Furthermore, the session token shall be deactivated when the user logs out.</p>
+
+<p>One mistake often made in storing the session tokens is to store them in
+memory. This is wrong, as it means that crashes or restarts logs every user
+out, suspending all sessions. Instead, it ought to be stored in a database,
+possibly in a column of the users table.</p>
+
+<p>Lastly, the session must not be shared through GET or other logged means.
+Rather, it should be stored in a cookie or <code>localStorage</code>.</p>
+
+<h1 id="clientside-hashing">Client-side hashing</h1>
+
+<p>A pretty uncommon, but really good practice, is the client-side hashing. It is
+supposed act as another layer of security, hiding the password from the server.</p>
+
+<p>The idea is that the client-side should hash (e.g. <code>scrypt</code>) the password
+before sending it to the server.</p>
+
+<p>This can seem pretty pointless, as (in the case of the web) the server could
+simply change the JavaScript to leak the password, but there is a reason: If
+the server-side has a bug that allows to read certain chosen memory locations
+(a buffer overflow, for example), it could be exploited to read the plaintext
+password.</p>
+
+<p>Instead, with client-side hashing, it can only read the hashed value. This of
+course doesn't stop the hacker from logging in to the user's account, but it
+stops them from obtaining the potentially reused plain-text password.</p>
+
+<h1 id="rate-limiting">Rate limiting</h1>
+
+<p>Rate limiting is really, really important, even though it is often understated.
+It prevents someone from bruteforcing common passwords.</p>
+
+<p>But how should the rate limiting work?</p>
+
+<p>One neat way is the "leaky bucket algorithm". It works by having requests
+"dripping" into a bucket like drops of water. When the leaky bucket is filled,
+no more requessts can be made, until the bucket has leaked to empty.</p>
+
+<p>In less figurative language, you have a counter on every visitor IP address,
+which is incremented on every request (e.g. login, create account etc.). When
+this counter is above some level (say 5), a timeout is set (e.g. the time when
+it expire is set as a field of the user). First when this timeout expires, the
+counter resets, and new requests can be made.</p>
+
+<h1 id="resetting-accounts">Resetting accounts</h1>
+
+<p>Of course a proper system must have the ability to reset accounts. There are
+many ways of doing this.</p>
+
+<p>I would recommend to have the user provide username and E-mail, as it—contrary
+to other approaches—does not allow spamming or denial of service attacks. It is
+important that you do not reveal whether or not the E-mail matched, as that can
+be a breach of privacy of the user (such thing can be used to check if the
+E-mail address matched).</p>
+
+<p>If the E-mail is only going to be used for resetting, I strongly recommend that
+you store a fingerprint (e.g. scrypt) of the E-mail address rather than the
+plaintext version. This still ensures that you can check if the given E-mail
+address of the resetting user matches, without the server side knowing anything
+about the address. It prevents the database being misused or sold for spam
+purposes, and also helps to protect the user's identity.</p>
+
+<p>When the user resets, a token shall be generated. This token is used in a link,
+sent to the user through an E-mail. It is important that this token is
+sufficiently long, random, and furthermore, that it expires (ideally within only
+a few hours).</p>
+
+<p>Note that upon resetting, the token should removed from the map.</p>
+
+<h1 id="other-tips">Other tips</h1>
+
+<ul>
+<li>Consider implementing a common two-factor key-sharing algorithm, such as
+<a href="https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm">TOTP</a>.</li>
+<li>I recommend that changing E-mail and password are done under the "reset
+password" formula, such that E-mail confirmation is required.</li>
+<li>It is extremely important that the connection, where the login happens is
+secure, for example <code>https</code>.</li>
+</ul>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>Well, that's it.</p>
+
+<p>You have to be careful about what you do, though. This is a minefield of
+vulnerabilities, and you have to be very careful not to introduce subtle bugs
+in your code. I recommend that you let somebody other than yourself review your
+code, to give you another's perspective on the code.</p>
+
+
+                <hr>
+                <i>Follow me on <a href="https://twitter.com/ticki_">Twitter</a> or <a href="https://github.com/ticki">Github</a>.</i>
+  			</section>
+
+  			<footer class="post-footer">
+  				<div class="post-tags">
+            
+            
+                <a href="http://ticki.github.io//tags/design/" class="js-ajax-link js-tag-index">design</a>
+            
+                <a href="http://ticki.github.io//tags/cryptography/" class="js-ajax-link js-tag-index">cryptography</a>
+            
+            
+  				</div>
+  				<div class="post-share">
+  					<a class="icon-twitter" href="https://twitter.com/share?text=You%20Are%20%28Probably%29%20Doing%20Login%20Systems%20Wrong&amp;url=http%3a%2f%2fticki.github.io%2fblog%2fyou-are-probably-doing-login-systems-wrong%2f" onclick="window.open(this.href, &#39;twitter-share&#39;, &#39;width=550,height=235&#39;);return false;">
+  						<span>Twitter</span>
+  					</a>
+  					<a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fticki.github.io%2fblog%2fyou-are-probably-doing-login-systems-wrong%2f" onclick="window.open(this.href, &#39;facebook-share&#39;,&#39;width=580,height=296&#39;);return false;">
+  						<span>Facebook</span>
+  					</a>
+  					<a class="icon-gplus" href="https://plus.google.com/share?url=http%3a%2f%2fticki.github.io%2fblog%2fyou-are-probably-doing-login-systems-wrong%2f" onclick="window.open(this.href, &#39;google-plus-share&#39;, &#39;width=490,height=530&#39;);return false;">
+  						<span>Google+</span>
+  					</a>
+  				</div>
+  			</footer>
+
+  			<aside class="post-comments">
+    
+    
+    <div id="disqus_thread"><iframe id="dsq-app9216" name="dsq-app9216" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/saved_resource.html" style="width: 1px !important; min-width: 100% !important; border: none !important; overflow: hidden !important; height: 2054px !important;" horizontalscrolling="no" verticalscrolling="no"></iframe></div>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+    
+</aside>
+
+
+			</div>
+
+			<nav class="post-nav">
+				
+					<a class="post-nav-item post-nav-next js-ajax-link" href="http://ticki.github.io/blog/an-atomic-hash-table/">
+						<section class="post-nav-teaser">
+							<span class="post-nav-icon"><i class="icon-arrow-left"></i></span>
+							<span class="post-nav-info">
+								<h4 class="post-nav-title">An Atomic Hash Table</h4>
+								<p class="post-nav-excerpt">A design for a high-performance atomic and linearizable hash table.…</p>
+							</span>
+						</section>
+					</a>
+				
+				
+					<a class="post-nav-item post-nav-prev js-ajax-link" href="http://ticki.github.io/blog/a-general-construction-for-rolling-hash-functions/">
+						<section class="post-nav-teaser">
+							<span class="post-nav-icon"><i class="icon-arrow-right"></i></span>
+							<span class="post-nav-info">
+								<h4 class="post-nav-title">A general construction for rolling hash functions</h4>
+								<p class="post-nav-excerpt">This short blog post looks at a general way of constructing rolling hash functions.…</p>
+							</span>
+						</section>
+					</a>
+				
+				<div class="clear"></div>
+			</nav>
+
+		</div>
+	</article>
+</main>
+
+				<div id="body-class" style="display: none;"></div>
+				<footer id="footer">
+					<section class="credits">
+						<span class="credits-theme">Theme <a href="https://github.com/zenithar/hugo-theme-bleak" target="_blank" rel="nofollow">Bleak</a> by <a href="http://zutrinken.com/" target="_blank" rel="nofollow">zutrinken</a></span>
+						<span class="credits-software">Published with <a href="http://gohugo.io/" target="_blank" rel="nofollow">Hugo</a></span>
+					</section>
+				</footer>
+				
+<div id="menu" data-target="menu">
+    <div class="menu-header">
+        <span class="menu-label">Menu</span>
+        <a class="menu-close" data-action="menu" data-target="menu"></a>
+    </div>
+
+    <div class="menu-list">
+        
+        
+        <li class="menu-list-item">
+            
+            <a class="home js-ajax-link" href="http://ticki.github.io/about/">About</a>
+        </li>
+        
+        
+        <li class="menu-list-item">
+            
+            <a class="home js-ajax-link" href="https://github.com/ticki">GitHub</a>
+        </li>
+        
+        
+        <li class="menu-list-item">
+            
+            <a class="home js-ajax-link" href="https://twitter.com/ticki_">Twitter</a>
+        </li>
+        
+    </div>
+
+</div>
+
+				
+<div id="tocMenu" data-target="toc">
+    <div class="menu-header">
+        <span class="menu-label">Menu</span>
+        <a class="menu-close" data-action="toc" data-target="toc"></a>
+    </div>
+    <div id="toc" class="menu-list">
+        
+    </div>
+</div>
+
+
+				<div class="overlay"></div>
+			</div>
+		</section>
+
+    <script>
+      (function(c,f){asyncLoader=function(i,h){i.foreach(function(k,j){e(j,d(j),h)});if(typeof h.callback=="function"){var g=setInterval(function(){if(f.readyState==="complete"){clearInterval(g);h.callback()}},10)}};var d=function(g){var h=g.split(".");return h[h.length-1]},e=function(h,i,g){switch(i){case"js":a(h,g);break;case"css":b(h);break;default:break}},a=function(i,h){var g=document.createElement("script");g.type="text/javascript";g.async=true;g.src=i;document.getElementsByTagName("head")[0].appendChild(g)},b=function(g){var h=document.createElement("link");h.type="text/css";h.rel="stylesheet";h.href=g;document.getElementsByTagName("head")[0].appendChild(h)};Array.prototype.foreach=function(h){for(var g=0;g<this.length;g++){h(g,this[g])}}})(this,document);
+
+      asyncLoader([
+				"/js/dependencies.js",
+				"/css/dependencies.css"
+      ],{
+        callback:function(){
+					asyncLoader([
+						"/css/style.css",
+						"/js/script.js"
+					], {
+						callback: function() {
+							$('body').fadeIn( 800 );
+						}
+					});
+        }
+      });
+
+</script>
+
+
+
+
+
+
+<iframe style="display: none;" src="./You Are (Probably) Doing Login Systems Wrong · Ticki&#39;s blog_files/saved_resource(1).html"></iframe></body></html>

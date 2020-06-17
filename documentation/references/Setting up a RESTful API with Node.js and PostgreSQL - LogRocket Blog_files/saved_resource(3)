@@ -1,0 +1,151 @@
+header {height: 55px;}
+.nav-up {top: 0 !important;}
+
+/* CRO stuff */
+
+.cine-18, .cro18 {display:none; height: 1px;}
+
+.cine-left .cro-inline-text {width:90%;}
+
+.cro-left-corner {opacity: 0}
+.code-block-17 {opacity:0;}
+.code-block-18 {height:1px; margin:0 !important;}
+
+.fa-angle-up::before {content:"^" !important;font-style:normal;    display: inline-block;
+    transform: scale(2, 1.5);}
+
+/* End CRO Stuff */
+
+.search-form .search-submit:before{content:">"; font-size: 10px; line-height:12px; position:relative;}
+
+.search-form .search-submit {height:35px;}
+.footer .pull-left {float:left; width: 48%;}
+.footer .pull-right {float:right; width: 48%;}
+.jetpack-search-form {float:right; width: 250px;}
+
+.homepage-hero {width: 100%; max-height: 900px; margin-top:-50px; overflow: hidden;}
+
+.authorpage .fa-send-o {display:none !important;}
+
+.comment-reply-link:before{content:"Reply";}
+
+.wordcount {visibility: hidden;}
+
+.post-subtitle {font-weight: 100;}
+.article-post {font-size: 1.125rem;}
+
+.search-form .search-submit {background-color: #764abc !important;
+    border-color: #764abc !important;}
+
+.type-post .post-categories a[rel~="category"] {display:none;}
+
+/* NEW vMenu/header stuff */
+
+.nav-up .blog-logo, .nav-up .navbar-brand {opacity: 1 !important;} 
+
+.blog-logo img {width: 150px;margin-top:-2px;}
+.nav-left {width: 50%; float: left;}
+.nav-left a, .nav-left img {float:left;}
+#menu-primary {padding-left:10px; padding-top:8px;}
+.nav-left nav {text-align:left; width: 50%; float: left; list-style:none;}
+.nav-left li {display:inline-block; list-style:none;}
+
+.nav-right {width: 50%; float: left;}
+.nav-right li {padding-top: 4px; padding-bottom: 4px; text-align:center; width: 20%; float: right; list-style:none;    font-size: 0.84rem;
+    text-transform: uppercase;}
+#menu-item-878 {background: #764abc;}
+#menu-item-878 a {color:#ffffff;}
+#menu-right-hand-menu {margin: 0 !important;padding-top: 2px;}
+
+.nav-link {padding-top: 0 !important; padding-bottom: 0 !important;}
+
+@media all and (max-width:600px){
+	#right-hand-nav li {width: 100%;}
+	.nav-left nav {width: 25%;}
+	.row {width: 100% !important; margin-left: 0 !important; margin-right: 0 !important;}
+	header {height: 85px;}
+	.row .col-md-5 {padding: 0px !important;}.fixed-top {position:relative;}
+}
+
+
+/* END NEW Menu/header stuff */
+
+.gist table tr:nth-child(even) {background-color: #f7f7f7;}
+
+
+.listpostsbycats {margin-top:40px;}
+.paged .section-title {margin-top:40px;}
+
+.carousel-control-prev, .carousel-control-prev {display: none !important;
+}
+#main-slider{
+    margin-top: -43px;
+    width: 300%;
+    margin-lefT: -15%;
+}
+.carousel-caption {display:none !important;}
+
+.share {display:none !important;}
+
+.alertbar {display:none !important;}
+
+.hljs {background: #ededed !important;}
+
+article h3 {margin-top: 2.5rem; margin-bottom: 2.5rem;}
+
+
+@media all and (max-width: 600px){.blog-logo {max-width:150px !important;} .blog-logo img {max-width:150px !important;} .navbar-light .navbar-brand, .navbar-light .navbar-toggler{margin-top:7px;}
+	.footer .pull-left, .footer .pull-right {width:100%;}
+	.jetpack-search-form {
+    float: none;
+    width: 250px;
+    margin: 10px auto;
+}
+}
+
+pre {max-height: 500px;}
+html {
+  overflow-x: initial !important;
+}
+
+::selection {
+  background: #b482d1; /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background: #b482d1; /* Gecko Browsers */
+}
+
+
+img[src^="https://i2.wp.com/cdn-images-1.medium.com/max/2400/1*GPjaPKNNUYHU8EsA3Z0JGA.png"] {
+  display: none;
+}
+
+img[src^="https://i2.wp.com/storage.googleapis.com/blog-images-backup/1*wV7zU6J05BL3bphzMlB2rA.png"] {
+  display: none;
+}
+
+img[src^="https://i2.wp.com/storage.googleapis.com/blog-images-backup/1*GPjaPKNNUYHU8EsA3Z0JGA.png"] {
+  display: none;
+}
+
+img[src^="https://i0.wp.com/blog.logrocket.com/wp-content/uploads/2017/03/f760c-1gpjapknnuyhu8esa3z0jga-e1563972469615.png"] {
+  display: none;
+}
+
+img[src^="https://i0.wp.com/storage.googleapis.com/blog-images-backup/1*2H5cnv_UzdWhAwB6KOAOhg.png"] {
+  display: none;
+}
+
+img[src^="https://i0.wp.com/blog.logrocket.com/wp-content/uploads/2017/03/f760c-1gpjapknnuyhu8esa3z0jga.png"] {
+  display: none;
+}
+
+img[src~="/wp-content/uploads/2019/05/logrocket-free-trial.png"] {
+  display: none;
+}
+
+img[src^="https://i0.wp.com/cdn-images-1.medium.com/max/2160/1*wV7zU6J05BL3bphzMlB2rA.png"] {
+  display: none;
+}
+
+.home .morefromcategory {display:none !important;}

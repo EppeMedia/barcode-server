@@ -5,7 +5,7 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS public.users
 (
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
+    id serial,
     email character varying NOT NULL,
     public_key character varying,
     password_hash character varying NOT NULL,
@@ -13,61 +13,75 @@ CREATE TABLE IF NOT EXISTS public.users
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS public.sessions
-(
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
-    user bigint,
-    token bigint,
-    expires bigint,
-    PRIMARY KEY (id),
-    CONSTRAINT user_fk FOREIGN KEY(user) REFERENCES public.users(id),
-    CONSTRAINT token_fk FOREIGN KEY(token) REFERENCES public.tokens(id)
-);
 
-CREATE TABLE IF NOT EXISTS public.permissions
-(
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
-    token bigint,
-    batch bigint,
-    permission character varying,
-    PRIMARY KEY (id),
-    CONSTRAINT batch_fk FOREIGN KEY(batch) REFERENCES public.batches(id),
-    CONSTRAINT token_fk FOREIGN KEY(token) REFERENCES public.tokens(id)
-);
-
-CREATE TABLE IF NOT EXISTS public.tokens
-(
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
-    expires bigint,
-    user bigint,
-    signatures character varying,
-    token character varying,
-    PRIMARY KEY (id),
-    CONSTRAINT user_fk FOREIGN KEY(user) REFERENCES public.users(id)
-);
 
 CREATE TABLE IF NOT EXISTS public.leases
 (
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
-    user bigint,
+    id serial,
+    "user" bigint,
     capacity bigint,
     price bigint,
     start_date bigint,
     end_date bigint,
     signature character varying,
     PRIMARY KEY (id),
-    CONSTRAINT user_fk FOREIGN KEY(user) REFERENCES public.users(id)
-);
-
-CREATE TABLE IF NOT EXISTS public.barcodes
-(
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
-    PRIMARY KEY (id)
+    CONSTRAINT user_fk FOREIGN KEY("user") REFERENCES public.users(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.batches
 (
-    id serial NOT NULL GENERATED ALWAYS AS IDENTITY,
-    PRIMARY KEY (id)
+    id serial,
+    "user" bigint,
+    lease bigint, 
+    resource character varying,
+    "name" character varying,
+    description character varying ,
+    PRIMARY KEY (id),
+    CONSTRAINT user_fk FOREIGN KEY("user") REFERENCES public.users(id),
+    CONSTRAINT lease_fk FOREIGN KEY(lease) REFERENCES public.leases(id)
 );
+
+CREATE TABLE IF NOT EXISTS public.tokens
+(
+    id serial,
+    expires bigint,
+    "user" bigint,
+    signatures character varying,
+    token character varying,
+    PRIMARY KEY (id),
+    CONSTRAINT user_fk FOREIGN KEY("user") REFERENCES public.users(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.sessions
+(
+    id serial,
+    "user" bigint,
+    "token" bigint,
+    expires bigint,
+    PRIMARY KEY (id),
+    CONSTRAINT user_fk FOREIGN KEY("user") REFERENCES public.users(id),
+    CONSTRAINT token_fk FOREIGN KEY("token") REFERENCES public.tokens(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.permissions
+(
+    id serial,
+    "token" bigint,
+    batch bigint,
+    permission character varying,
+    PRIMARY KEY (id),
+    CONSTRAINT batch_fk FOREIGN KEY(batch) REFERENCES public.batches(id),
+    CONSTRAINT token_fk FOREIGN KEY("token") REFERENCES public.tokens(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.barcodes
+(
+    id serial,
+    barcodes character varying,
+    batch bigint,
+    PRIMARY KEY (id),
+    CONSTRAINT batch_fk FOREIGN KEY(batch) REFERENCES public.batches(id)
+);
+
+
 END;

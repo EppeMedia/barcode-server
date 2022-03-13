@@ -19,6 +19,16 @@ To install the the database follow these steps:
  -   Once connected create a new database simply called "public"
  -   Copy the contents of Schema.sql and run this script using the query tool (leftmost button in the browser section of pgAdmin), after this the database should be ready to use
 
+
+### Start the application
+
+Run this command to install the dependencies:
+```npm install```
+
+And this command to start the application:
+```node src/index.js```
+
+After doing this the server will be availible at localhost:8000/ .
 ### Creating an account
 
  -   Start Postman and create a new PUT-request with url localhost:8000/user/register

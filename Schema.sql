@@ -7,9 +7,10 @@ CREATE TABLE IF NOT EXISTS public.users
 (
     id serial,
     email character varying NOT NULL,
+    name character varying NOT NULL,
     public_key character varying,
     password_hash character varying NOT NULL,
-    password_salt character varying NOT NULL,
+    password_salt character,
     PRIMARY KEY (id)
 );
 

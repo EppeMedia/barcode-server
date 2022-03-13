@@ -6,10 +6,10 @@ module.exports = {
   barcodeSize: 3,
   rsaModulusLength: 4096,
   database: {
-    user: "barcode_api",
+    user: "postgres",
     host: "localhost",
-    database: "postgres",
-    password: "/W3)}b*rQEG'Q7z3",
+    database: "public",
+    password: "postgres",
     port: 5432
   }
 };

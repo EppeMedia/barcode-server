@@ -61,6 +61,7 @@ exports.registerUser = function(req, res) {
               res
             );
           } else {
+            console.log(error);
             errorResponse.error("Failed to register user!", 400, res);
           }
         }

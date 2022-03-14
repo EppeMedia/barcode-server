@@ -223,4 +223,144 @@ describe('User management', function () {
         chai.assert.equal(result.status, 400);//check request unsuccessful
       });
     });
+        //STUB Test cases
+    
+        describe('#createOrganization()', function() {
+          it('should create an organization for the logged in user', async function(){
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                permissions: 'read-write',
+              }
+            });
+    
+            const result = await userManagement.createOrganization(req, () => {});
+            chai.assert.equal(result.status, 200);
+            chai.assert.isDefined(result.organization, 'function should contain a field for organization which is the unique identifier');
+          });
+    
+          it('should not create an organization for the logged in user because of an already-existing organization', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                permissions: 'read-write',
+              }
+            });
+    
+            const result = await userManagement.createOrganization(req, () => {});
+            chai.assert.equal(result.status, 400);
+            chai.assert.isUndefined(result.organization, 'function should NOT contain a field for organization which is the unique identifier');
+          });
+    
+          it('Creating an organization with only read permissions is not allowed', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                permissions: 'read'
+              }
+            });
+    
+            const result = await userManagement.createOrganization(req, () => {});
+            chai.assert.equal(result.status, 400);
+            chai.assert.equal(result.error, true);
+          });
+        });
+    
+        describe('#updateOrganization()', function() {
+          it('update an organization to add a new member', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                permissions: 'read',
+                member: 'Ian McShane'
+              }
+            });
+    
+            const result = await userManagement.updateOrganization(req, () => {});
+            chai.assert.equal(result.status, 200);
+            chai.assert.equal(result.error, false);
+          });
+    
+          it('update an organization to remove a member', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                member: 'Ian McShane'
+              }
+            });
+    
+            const result = await userManagement.updateOrganization(req, () => {});
+            chai.assert.equal(result.status, 200);
+            chai.assert.equal(result.error, false);
+          });
+    
+          it('Updating an organization that does not exist should throw an error', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'Keanu Reeves',
+                member: 'Winston',
+                permissions: 'read-write',
+              }
+            });
+    
+            const result = await userManagement.createOrganization(req, () => {});
+            chai.assert.equal(result.status, 400);
+            chai.assert.equal(result.error, true);
+          });
+    
+          it('Updating an organization with a member that does not exist should throw an error', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                permissions: 'read-write',
+                member: 'Alfie Allen'
+              }
+            });
+    
+            const result = await userManagement.createOrganization(req, () => {});
+            chai.assert.equal(result.status, 400);
+            chai.assert.equal(result.error, true);
+          });
+    
+          // NOTE TODO: this requires the user to be logged in as a member without proper read/write permissions
+          it('Updating an organization as a member without write permissions should throw an error', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+                member: 'Keanu Reeves'
+              }
+            });
+    
+            const result = await userManagement.createOrganization(req, () => {});
+            chai.assert.equal(result.status, 400);
+            chai.assert.equal(result.error, true);
+          });
+        });
+    
+        describe('#deleteOrganization()', function() {
+          it('Deleting an organization', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'John Wick',
+              }
+            });
+    
+            const result = await userManagement.deleteOrganization(req, () => {});
+            chai.assert.equal(result.status, 200);
+            chai.assert.equal(result.error, false);
+          });
+    
+          it('Deleting an organization that does not exist should throw an error', async function() {
+            var req = mockRequest({
+              body: {
+                name: 'Keanu Reeves',
+              }
+            });
+    
+            const result = await userManagement.deleteOrganization(req, () => {});
+            chai.assert.equal(result.status, 400);
+            chai.assert.equal(result.error, true);
+          });
+        });
+    });
 });

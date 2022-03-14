@@ -8,8 +8,9 @@ module.exports = {
   database: {
     user: "postgres",
     host: "localhost",
-    database: "public",
+    database: "public-test",
     password: "postgres",
     port: 5432
-  }
+  },
+  isTesting: true,
 };

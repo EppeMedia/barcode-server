@@ -42,9 +42,6 @@ describe('User management', function () {
 
     describe('#registerUser()', function () {
       it('should register a user with the specified name, password and email', async function () {
-
-          // TODO: we need a way of clearing the db every time we start the test script
-
           const req = mockRequest({
               body: {
                   email: 'hi@bye.com',
@@ -62,7 +59,7 @@ describe('User management', function () {
           chai.expect(res.status).to.have.been.calledWith(200); // status OK
       });
 
-      it('should not register a user with with an already-existing email', async function () {
+      it('should not register a user with an already-existing email', async function () {
   
           const req = mockRequest({
               body: {
@@ -80,14 +77,72 @@ describe('User management', function () {
 
           chai.expect(res.status).to.have.been.calledWith(400); // status not OK
       });
+
+      it('should not register a user with no request body', async function () {
+  
+        const req = mockRequest();
+
+        const res = {};
+        res.status = sinon.spy();
+        res.send = sinon.spy();
+
+        await userManagement.registerUser(req, res, () => {});
+
+        chai.expect(res.status).to.have.been.calledWith(400); // status not OK
     });
 
+    it('should not register a user with no email in request body', async function () {
   
+      const req = mockRequest({body: {
+        password: 'password',
+        name: 'Dirty Harry',
+    },});
+
+      const res = {};
+      res.status = sinon.spy();
+      res.send = sinon.spy();
+
+      await userManagement.registerUser(req, res, () => {});
+
+      chai.expect(res.status).to.have.been.calledWith(400); // status not OK
+   });
+
+   it('should not register a user with no password in request body', async function () {
+  
+    const req = mockRequest({body: {
+      email: 'h1@bye.com',
+      name: 'Dirty Harry',
+  },});
+
+    const res = {};
+    res.status = sinon.spy();
+    res.send = sinon.spy();
+
+    await userManagement.registerUser(req, res, () => {});
+
+    chai.expect(res.status).to.have.been.calledWith(400); // status not OK
+    });
+
+  it('should not register a user with no name in request body', async function () {
+  
+    const req = mockRequest({body: {
+      email: 'h1@bye.com',
+      password: 'password',
+  },});
+
+    const res = {};
+    res.status = sinon.spy();
+    res.send = sinon.spy();
+
+    await userManagement.registerUser(req, res, () => {});
+
+    chai.expect(res.status).to.have.been.calledWith(400); // status not OK
+    });
+  
+  });
 
     describe('#requestLogin()', function () {
-      it('should log a user in with correct credentials giving a valid jwt', async function () {
-  
-          // TODO: we need a way of clearing the db every time we start the test script
+      it('should log a user in with correct credentials', async function () {
   
           var req = mockRequest({
               body: {
@@ -96,16 +151,76 @@ describe('User management', function () {
               },
           });
   
-  
           const result = await userManagement.requestLogin(req.body, () => {});
-  
-          console.log("result", result);
 
           chai.assert.equal(result.status, 200);//check request successful
           chai.assert.equal(result.error, false); // check no error
           chai.assert.notEqual(result.user, undefined);//check user correct
       });
+
+      it('should not log a user in with incorrect password', async function () {
+  
+          var req = mockRequest({
+              body: {
+                  email: 'hi@bye.com',
+                  password: 'passwords', // bad password
+              },
+          });
+  
+          const result = await userManagement.requestLogin(req.body, () => {});
+
+          chai.assert.equal(result.status, 400);//check request unsuccessful
+      });
+
+      it('should not log a user in with non-existing email', async function () {
+  
+        var req = mockRequest({
+            body: {
+                email: 'hi@bae.com', // bad email
+                password: 'password',
+            },
+        });
+
+        const result = await userManagement.requestLogin(req.body, () => {});
+        
+        chai.assert.equal(result.status, 400);//check request unsuccessful
+      });
+
+      it('should not log a user in with no request body', async function () {
+  
+        var req = mockRequest();
+
+        const result = await userManagement.requestLogin(req.body, () => {});
+        
+        chai.assert.equal(result.status, 400);//check request unsuccessful
+      });
+
+      it('should not log a user in with missing password', async function () {
+  
+        var req = mockRequest({
+          body: {
+            email: 'hi@bye.com',
+            // missing password
+          }
+        });
+
+        const result = await userManagement.requestLogin(req.body, () => {});
+        
+        chai.assert.equal(result.status, 400);//check request unsuccessful
+      });
+
+      it('should not log a user in with missing email', async function () {
+  
+        var req = mockRequest({
+          body: {
+            // missing email
+            password: 'password',
+          }
+        });
+
+        const result = await userManagement.requestLogin(req.body, () => {});
+        
+        chai.assert.equal(result.status, 400);//check request unsuccessful
+      });
     });
-
-
 });

@@ -7,6 +7,27 @@ var config = require("../config.js");
 
 var exports = (module.exports = {});
 
+exports.createOrganization = function(req, callback) {
+  return new Promise(resolve => {
+    callback({ message: "stub!", status: 400, error: true});
+    return resolve({ message: "stub!", status: 400, error: true});
+  });
+};
+
+exports.updateOrganization = function(req, callback) {
+  return new Promise(resolve => {
+    callback({ message: "stub!", status: 400, error: true});
+    return resolve({ message: "stub!", status: 400, error: true});
+  });
+};
+
+exports.deleteOrganization = function(req, callback) {
+  return new Promise(resolve => {
+    callback({ message: "stub!", status: 400, error: true});
+    return resolve({ message: "stub!", status: 400, error: true});
+  });
+};
+
 exports.registerUser = function(req, res, dun) {
   return new Promise(resolve => {
 

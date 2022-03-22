@@ -7,6 +7,7 @@ var config = require("../config.js");
 var exports = (module.exports = {});
 
 exports.registerToken = function(body, callback) {
+  return new Promise(resolve => {
   const expires = body.expires;
   if (!expires) {
     console.warn("Warn: Issuing token with no expiration date!");
@@ -15,7 +16,8 @@ exports.registerToken = function(body, callback) {
   const userID = body.userID;
   if (!userID) {
     // No userID supplied.
-    return callback({ message: "Missing userID attribute!" }, 400);
+    callback({ message: "Missing userID attribute!", status: 400}, 400);
+    return resolve({ message: "Missing userID attribute!", status: 400 });
   }
 
   let signature = body.signature;
@@ -27,7 +29,8 @@ exports.registerToken = function(body, callback) {
   const description = body.description;
   if (!description) {
     // No description supplied.
-    return callback({ message: "Missing description attribute!" }, 400);
+    callback({ message: "Missing description attribute!" });
+    return resolve({ message: "Missing description attribute!", status: 400});
   }
 
   // Can be undefined
@@ -37,10 +40,11 @@ exports.registerToken = function(body, callback) {
     for (let i = 0; i < batchPermissions.length; i++) {
       if (!batchPermissions[i].batchID || !batchPermissions[i].permissions) {
         // Malformed request; every batch permission element needs a batchID and permissions attribute.
-        return callback(
+        callback(
           { message: "Malformed batchPermissions attribute!" },
           400
         );
+        return resolve({ message: "Malformed batchPermissions attribute!", status: 400})
       }
     }
   }
@@ -55,14 +59,16 @@ exports.registerToken = function(body, callback) {
       batchPermissions,
       (error, tokenID) => {
         if (error) {
-          return callback({ message: "Unable to register token!" }, 400);
+          callback({ message: "Unable to register token!" }, 400)
+          return resolve({ message: "Unable to register token", status: 400});
         }
 
         callback(false, 200, tokenID);
+        return resolve({ message: "Successful token registration", status: 200 })
       }
     );
   });
-
+});
   /*
   const signature = body.signature;
   if (!signature) {

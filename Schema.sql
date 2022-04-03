@@ -47,8 +47,9 @@ CREATE TABLE IF NOT EXISTS public.tokens
     id serial,
     expires bigint,
     "user" bigint,
-    signatures character varying,
+    signature character varying,
     token character varying,
+    description character varying,
     PRIMARY KEY (id),
     CONSTRAINT user_fk FOREIGN KEY("user") REFERENCES public.users(id)
 );

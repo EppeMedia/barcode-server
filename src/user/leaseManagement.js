@@ -7,8 +7,9 @@ exports.registerLease = function (req, callback) {
   return new Promise(resolve => {
     if (!req) {
       // No body supplied.
-      resolve({ message: "Missing request body!" }, 400);
-      return callback({ message: "Missing request body!" }, 400);
+      var res = { message: "Missing request body!", status: 400 };
+      callback(res);
+      return resolve(res);
     }
 
     const userID = req.userID;
@@ -18,8 +19,9 @@ exports.registerLease = function (req, callback) {
     const endDate = req.endDate;
 
     if (!userID || !capacity || !price || !startDate || !endDate) {
-      resolve({ message: "Missing attributes!" }, 400);
-      return callback({ message: "Missing attributes!" }, 400);
+      var res = { message: "Missing attributes!", status: 400 };
+      callback(res);
+      return resolve(res);
     }
 
     const signature = req.signature;
@@ -38,12 +40,14 @@ exports.registerLease = function (req, callback) {
         signature,
         (error, results) => {
           if (error) {
-            resolve({ message: "Unable to register lease!" }, 500);
-            return callback({ message: "Unable to register lease!" }, 500);
+            var res = { message: "Unable to register lease!", status: 500 };
+            callback(res);
+            return resolve(res);
           }
 
-          resolve(false, 200, true);
-          return callback(false, 200, true);
+          var res = { message: null, status: 200 };
+          callback(res);
+          return resolve(res);
         }
       );
     });
@@ -54,33 +58,38 @@ exports.checkLeaseCapacity = function (leaseID, amount, callback) {
   return new Promise(resolve => {
     dbQueries.getLease(leaseID, (error, lease) => {
       if (error || !lease) {
-        resolve({ message: "Unable to retrieve lease!" }, 500);
-        return callback({ message: "Unable to retrieve lease!" }, 500);
+        var res = { message: "Unable to retrieve lease!", status: 500 };
+        callback(res);
+        return resolve(res);
       }
 
       // Check if lease is expired (time in Unix epoch seconds)
       const currentTime = Date.now() / 1000;
       if (currentTime >= lease.end_date) {
-        resolve({ message: `Lease expired at timestamp ${lease.end_date}!` }, 400);
-        return callback({ message: `Lease expired at timestamp ${lease.end_date}!` }, 400);
+        var res = { message: `Lease expired at timestamp ${lease.end_date}!`, status: 400 };
+        callback(res);
+        return resolve(res);
       }
 
       // Check if the lease allows for the additional barcode capacity requested
       dbQueries.getLeaseUsage(leaseID, (error, usage) => {
         if (error || !usage) {
-          resolve({ message: "Unable to retrieve lease!" }, 500);
-          return callback({ message: "Unable to retrieve lease!" }, 500);
+          var res = { message: "Unable to retrieve lease!", status: 500 };
+          callback(res);
+          return resolve(res);
         }
 
         // Check if capacity is exceeded
         if (amount > lease.capacity - usage) {
-          resolve({message: `Lease capacity exceeded! Capacity: ${lease.capacity}, used: ${usage}, requested: ${amount}`}, 500);
-          return callback({message: `Lease capacity exceeded! Capacity: ${lease.capacity}, used: ${usage}, requested: ${amount}`}, 500);
+          var res = { message: `Lease capacity exceeded! Capacity: ${lease.capacity}, used: ${usage}, requested: ${amount}`, status: 500 }
+          callback(res);
+          return resolve(res);
         }
 
         // All is well
-        resolve(false, 200, true);
-        callback(false, 200, true);
+        var res = { message: null, status: 200 };
+        callback(res);
+        return resolve(res);
       });
     });
   })

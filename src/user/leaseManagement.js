@@ -8,7 +8,7 @@ exports.registerLease = function (req, callback) {
     if (!req) {
       // No body supplied.
       var res = { message: "Missing request body!", status: 400 };
-      callback(res);
+      callback({ message: "Missing request body!" }, 400);
       return resolve(res);
     }
 
@@ -17,14 +17,13 @@ exports.registerLease = function (req, callback) {
     const price = req.price;
     const startDate = req.startDate;
     const endDate = req.endDate;
-
     if (!userID || !capacity || !price || !startDate || !endDate) {
       var res = { message: "Missing attributes!", status: 400 };
-      callback(res);
+      callback({ message: "Missing attributes!" }, 400);
       return resolve(res);
     }
 
-    const signature = req.signature;
+    var signature = req.signature; // BUG: was const but consts cannot be reassinged
     if (!signature) {
       console.warn("Warn: Issuing lease without signature!");
       signature = "signature_placeholder";
@@ -41,7 +40,7 @@ exports.registerLease = function (req, callback) {
         (error, results) => {
           if (error) {
             var res = { message: "Unable to register lease!", status: 500 };
-            callback(res);
+            callback({ message: "Unable to register lease!" }, 500);
             return resolve(res);
           }
 
@@ -59,7 +58,7 @@ exports.checkLeaseCapacity = function (leaseID, amount, callback) {
     dbQueries.getLease(leaseID, (error, lease) => {
       if (error || !lease) {
         var res = { message: "Unable to retrieve lease!", status: 500 };
-        callback(res);
+        callback({ message: "Unable to retrieve lease!" }, 500);
         return resolve(res);
       }
 
@@ -98,3 +97,20 @@ exports.checkLeaseCapacity = function (leaseID, amount, callback) {
     });
   })
 };
+
+
+// used for testing
+// returns list of leases of user
+exports.getLeasesOfUser = function (userID, callback) {
+  return new Promise(resolve => {
+    dbQueries.getLeasesByUserId(userID, (error, leases) => {
+      if (error || !leases) {
+        var res = { message: "Unable to retrieve leases!", status: 500 };
+        callback({ message: "Unable to retrieve lease!" }, 500);
+        return resolve(res);
+      }
+      callback(leases);
+      return resolve(leases);
+    });
+  })
+}

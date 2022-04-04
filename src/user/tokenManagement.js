@@ -64,7 +64,7 @@ exports.registerToken = function(body, callback) {
         }
 
         callback(false, 200, tokenID);
-        return resolve({ message: "Successful token registration", status: 200 })
+        return resolve({ error:false, message: "Successful token registration", status: 200 })
       }
     );
   });

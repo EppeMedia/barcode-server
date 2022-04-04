@@ -11,7 +11,8 @@ const {mockRequest, mockResponse} = require('mock-req-res');
 // units
 const userManagement = require('../src/user/userManagement.js');
 const tokenManagement = require('../src/user/tokenManagement.js');
-const barcodeManagement = require('../src/user/barcodeManagement.js');
+const barcodeManagement = require('../src/barcode/barcodeManagement.js');
+const leaseManagement = require('../src/user/leaseManagement.js')
 
 // DB
 var Pool = require("pg").Pool;
@@ -21,6 +22,7 @@ const pool = new Pool(config.database);
 
 var testuserID;
 var testBatchID;
+var testLeaseID;
 
 describe('Token management', function () {
 
@@ -36,7 +38,9 @@ describe('Token management', function () {
         const result1 = await pool.query("truncate table public.users cascade;");
         const result2 = await pool.query("truncate table public.tokens cascade;");
         const result3 = await pool.query("truncate table public.batches cascade");
-        if (result1.error || result2.error || result3.error) {
+        const result4 = await pool.query("truncate table public.leases cascade");
+
+        if (result1.error || result2.error || result3.error || result4.error) {
           // could not truncate... fail tests
           it("should have truncated the database, something went wrong with the test setup. Not executing tests...", function () {
             chai.assert.equal(true, false);
@@ -50,6 +54,7 @@ describe('Token management', function () {
         // testing three possible paths in the token/register Mealy Machine
     
         ///Prepare
+
         // register a user beforehand
         it('should register a user for our tests', async function () {
             const req = mockRequest({
@@ -70,7 +75,7 @@ describe('Token management', function () {
         });
 
         // log the user in
-        it('sign in as out registered user', async function () {
+        it('sign in as registered user', async function () {
   
             var req = mockRequest({
                 body: {
@@ -83,20 +88,67 @@ describe('Token management', function () {
 
             testuserID = result.user.userID;
 
-            chai.assert.equal(result.status, 200);//check request successful
+            chai.assert.equal(result.status, 200); //check request successful
             chai.assert.equal(result.error, false); // check no error
-            chai.assert.notEqual(result.user, undefined);//check user correct
+            chai.assert.notEqual(result.user, undefined); //check user correct
         });
 
-        //make batch
-        it('create batch', async function () {
-  
-            testBatchID = result.user.userID;
+        //create lease
+        it("Should succesfully create a lease for our batch", async function () {
+            const req = mockRequest({
+                body: {
+                    userID: testuserID,
+                    capacity: 2,
+                    price: 8,
+                    startDate: (Date.now() / 1000),
+                    endDate: (Date.now() / 1000 + 500),
+                    signature: 'test'
+                },
+            });
 
-            chai.assert.equal(result.status, 200);//check request successful
-            chai.assert.equal(result.error, false); // check no error
-            chai.assert.notEqual(result.user, undefined);//check user correct
+            const result1 = await leaseManagement.registerLease(req.body, () => {});// create lease
+            const result2 = await leaseManagement.getLeasesOfUser(testuserID, () => {}); // get leases for our user
+            
+            chai.assert.isFalse(result1.message);
+            chai.assert.equal(result1.status, 200);
+            chai.assert.isTrue(result1.success);
+
+            chai.assert.equal(result2[0].user, testuserID);
+
+            testLeaseID = result2[0].id;
         });
+
+        //create batch
+        it('Should succesfully create a batch for our token', async function () {
+            const req1 = mockRequest({
+                body: {
+                    userID: testuserID,
+                    leaseID: testLeaseID,
+                    name: "test"
+                },
+            });
+
+            const req2 = mockRequest({
+                body: {
+                    userID: testuserID,
+                },
+            });
+            const result1 = await barcodeManagement.registerBatch(req1.body, () => {});
+            const result2 = await barcodeManagement.getBatches(req2.body, () => {});
+            
+            chai.assert.equal(result1.status, 200);//check request successful
+            chai.assert.equal(result1.error, false); // check no error
+
+            chai.assert.equal(result2.status, 200);//check request successful
+            chai.assert.equal(result2.error, false); // check no error
+            chai.assert.notEqual(result2.batches, []); // check batches not empty
+            chai.assert.notEqual(result2.batches, undefined); // check batches not undefined
+
+            testBatchID = result2.batches[0].id;
+        });
+
+
+
         ///End prepare
 
         // input check -> 400 "Bad request": some error message
@@ -104,8 +156,11 @@ describe('Token management', function () {
             const req = mockRequest({
                 body: {
                     expires: '2023-04-01',
-                    userID: '0',
-                    batchPermissions: 'read-write',
+                    userID: testuserID,
+                    batchPermissions: [{
+                        batchID : testBatchID,
+                        permissions : 'read-write'
+                    }],
                 }, // missing description
             });
     
@@ -123,8 +178,7 @@ describe('Token management', function () {
                     userID: testuserID,
                     description: 'This is a token',
                     batchPermissions: [{
-                        // also need a batch
-                        batchID : '0',
+                        batchID : testBatchID,
                         permissions : 'read-write'
                     }]
                 },
@@ -134,7 +188,7 @@ describe('Token management', function () {
     
             const result = await tokenManagement.registerToken(req.body, () => {});
     
-            // chai.assert.equal(result.status, 200);
+            chai.assert.equal(result.status, 200);
             chai.assert.equal(result.message, 'Successful token registration');
         });
     
@@ -143,19 +197,22 @@ describe('Token management', function () {
             const req = mockRequest({
                 body: {
                     expires: '2022-04-01',
-                    userID: '0',
+                    userID: testuserID,
                     description: 'This is a token',
-                    batchPermissions: 'read-write',
+                    batchPermissions: [{
+                        batchID : testBatchID,
+                        permissions : 'read-write'
+                    }]
                 },
-            }); // token already exists
-    
+            }); // simulate db connection failure
+
             const res = {};
             res.status = sinon.spy();
             res.send = sinon.spy();
-    
+            
             const result = await tokenManagement.registerToken(req.body, () => {});
     
-            chai.expect(res.status).to.have.been.calledWith(400);
+            chai.assert.equal(result.status, 400);
             chai.assert.equal(result.message, 'Unable to register token');
         });
     });

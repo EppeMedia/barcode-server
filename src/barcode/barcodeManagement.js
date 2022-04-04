@@ -69,67 +69,81 @@ exports.barcodesExist = function(barcodes, callback) {
 };
 
 exports.registerBatch = function(req, callback) {
-  if (!req) {
-    // No body supplied.
-    return callback({ message: "Missing request body!" }, 400);
-  }
-
-  const userID = req.userID;
-  if (!userID) {
-    // No userID supplied.
-    return callback({ message: "Missing attributes!" }, 400);
-  }
-
-  const leaseID = req.leaseID;
-  if (!leaseID) {
-    // No leaseID supplied.
-    return callback({ message: "Missing attributes!" }, 400);
-  }
-
-  const name = req.name;
-  if (!name) {
-    // No name supplied.
-    return callback({ message: "Missing attributes!" }, 400);
-  }
-
-  // Resource and description do not need to be defined
-  const resource = req.resource;
-  const description = req.description;
-
-  dbQueries.registerBatch(
-    userID,
-    leaseID,
-    resource,
-    name,
-    description,
-    (error, results) => {
-      if (error) {
-        return callback({ message: "Unable to register batch!" }, 500);
-      }
-
-      return callback(false, 200, results);
+  return new Promise(resolve => {
+    if (!req) {
+      // No body supplied.
+      callback({ message: "Missing request body!" }, 400);
+      return resolve({ message: "Missing request body!", status: 400});
     }
-  );
+
+    const userID = req.userID;
+    if (!userID) {
+      // No userID supplied.
+      callback({ message: "Missing request body!" }, 400);
+      return resolve({ message: "Missing request body!", status: 400});
+    }
+
+    const leaseID = req.leaseID;
+    if (!leaseID) {
+      // No leaseID supplied.
+      callback({ message: "Missing request body!" }, 400);
+      return resolve({ message: "Missing request body!", status: 400});
+    }
+
+    const name = req.name;
+    if (!name) {
+      // No name supplied.
+      callback({ message: "Missing request body!" }, 400);
+      return resolve({ message: "Missing request body!", status: 400});
+    }
+
+    // Resource and description do not need to be defined
+    const resource = req.resource;
+    const description = req.description;
+
+    dbQueries.registerBatch(
+      userID,
+      leaseID,
+      resource,
+      name,
+      description,
+      (error, results) => {
+        if (error) {
+        
+          callback({ message: "Unable to register batch!" }, 500);
+          return resolve({ message: "Unable to register batch!", status: 500})
+        }
+        callback(false, 200, results);
+        
+        return resolve({error: false, status: 200, batch: results});
+      }
+    );
+  });
 };
 
 exports.getBatches = function(req, callback) {
-  if (!req) {
-    // No body supplied.
-    return callback({ message: "Missing request body!" }, 400);
-  }
-
-  const userID = req.userID;
-  if (!userID) {
-    // No userID supplied.
-    return callback({ message: "Missing attributes!" }, 400);
-  }
-
-  dbQueries.getBatches(userID, (error, results) => {
-    if (error) {
-      return callback({ message: "Unable to get batches!" }, 500);
+    return new Promise(resolve => {
+    if (!req) {
+      // No body supplied.
+      callback({ message: "Missing request body!" }, 400);
+      return resolve({ message: "Missing request body!", status: 400});
     }
 
-    return callback(false, 200, results);
+    const userID = req.userID;
+    if (!userID) {
+      // No userID supplied.
+      callback({ message: "Missing request body!" }, 400);
+      return resolve({ message: "Missing request body!", status: 400});
+    }
+
+    dbQueries.getBatches(userID, (error, results) => {
+      if (error) {
+        callback({ message: "Unable to get batches!" }, 500);
+        return resolve({message: "Unable to get batches!", status: 500});
+      }
+      callback(false, 200, results);
+      return resolve({error: false, status: 200, batches: results})
+    });
   });
 };
 

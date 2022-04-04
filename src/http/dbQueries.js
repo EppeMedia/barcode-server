@@ -172,7 +172,7 @@ exports.registerBatch = function(
     })
                 VALUES (${userID}, ${leaseID} ${
       resource ? `, ${resource}` : ``
-    }, ${name}${description ? `, ${description}` : ``});`,
+    }, '${name}' ${description ? `, ${description}` : ``});`,
     (error, results) => {
       return callback(error, results);
     }
@@ -252,6 +252,16 @@ exports.getLease = function(leaseID, callback) {
   });
 };
 
+exports.getLeasesByUserId = function(userID, callback) {
+  pool.query(`SELECT * FROM leases WHERE leases.user = ${userID}`, (error, results) => {
+    let leases;
+    if (!error && results.rows.length > 0) {
+      leases = results.rows;
+    }
+    return callback(error, leases);
+  });
+};
+
 exports.getLeaseUsage = function(leaseID, callback) {
   // old query: `SELECT COUNT(*) AS usage FROM barcodes WHERE lease = ${leaseID};`
   pool.query(
@@ -262,8 +272,8 @@ exports.getLeaseUsage = function(leaseID, callback) {
     `,
     (error, results) => {
       let usage;
-      if (!error && results.rows.length > 0) {
-        usage = results.rows[0].usage;
+      if (!error && results.rows.length > 0) { //bug wrong column name, new query has no alias.
+        usage = results.rows[0].count;
       }
       return callback(error, usage);
     }

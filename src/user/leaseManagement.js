@@ -45,8 +45,8 @@ exports.registerLease = function (req, callback) {
             return resolve(res);
           }
 
-          var res = { message: null, status: 200 };
-          callback(res);
+          var res = { message: false, status: 200, success: true };
+          callback(false, 200, true);
           return resolve(res);
         }
       );
@@ -67,7 +67,8 @@ exports.checkLeaseCapacity = function (leaseID, amount, callback) {
       const currentTime = Date.now() / 1000;
       if (currentTime >= lease.end_date) {
         var res = { message: `Lease expired at timestamp ${lease.end_date}!`, status: 400 };
-        callback(res);
+        callback({ message: `Lease expired at timestamp ${lease.end_date}!` },
+          400);
         return resolve(res);
       }
 
@@ -75,20 +76,23 @@ exports.checkLeaseCapacity = function (leaseID, amount, callback) {
       dbQueries.getLeaseUsage(leaseID, (error, usage) => {
         if (error || !usage) {
           var res = { message: "Unable to retrieve lease!", status: 500 };
-          callback(res);
+          callback({ message: "Unable to retrieve lease!" }, 500);
           return resolve(res);
         }
 
         // Check if capacity is exceeded
         if (amount > lease.capacity - usage) {
           var res = { message: `Lease capacity exceeded! Capacity: ${lease.capacity}, used: ${usage}, requested: ${amount}`, status: 500 }
-          callback(res);
+          callback({
+            message: `Lease capacity exceeded! Capacity: ${lease.capacity}, used: ${usage}, requested: ${amount}`
+          },
+          500);
           return resolve(res);
         }
 
         // All is well
-        var res = { message: null, status: 200 };
-        callback(res);
+        var res = { message: false, status: 200, success: true };
+        callback(false, 200, true);
         return resolve(res);
       });
     });

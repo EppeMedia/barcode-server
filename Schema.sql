@@ -6,7 +6,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS public.users
 (
     id serial,
-    email character varying NOT NULL,
+    email character varying NOT NULL UNIQUE,
     name character varying NOT NULL,
     public_key character varying,
     password_hash character varying NOT NULL,
@@ -47,8 +47,9 @@ CREATE TABLE IF NOT EXISTS public.tokens
     id serial,
     expires bigint,
     "user" bigint,
-    signatures character varying,
+    signature character varying,
     token character varying,
+    description character varying,
     PRIMARY KEY (id),
     CONSTRAINT user_fk FOREIGN KEY("user") REFERENCES public.users(id)
 );

@@ -22,7 +22,7 @@ app.get("/", authorization.checkJWTRequestHeaders, (req, res) => {
   res.send({ message: "jwt token valid!" });
 });
 
-app.put("/user/register", (req, res) => {
+app.post("/user/register", (req, res) => { // BUG: req type was PUT -> should be POST
   userManagement.registerUser(req, res);
 });
 

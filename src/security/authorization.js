@@ -22,35 +22,43 @@ exports.checkJWTRequestHeaders = function(req, res, next) {
 
     jwt.verify(token, config.jwtSecret, (err, decoded) => {
       if (err) {
-        return res.json({
+        res.status(401); //BUG: used to return 200 instead of 401
+        res.json({
           success: false,
           message: "Token is invalid!",
           errorCode: 0xdeadbeef
         });
+        return res;
       } else {
         // Token is verified and valid; continue to next middleware
 
         // If userID is in the requestAnimationFrame, check if it matches the token:
         if (req.query.userID && req.query.userID != decoded.userID) {
-          return res.json({
+          res.status(401);//BUG: used to return 200 instead of 401
+          res.json({
             success: false,
             message: "Token is invalid!"
           });
+          return res;
         } else if (req.body.userID && req.body.userID != decoded.userID) {
-          return res.json({
+          res.status(401);//BUG: used to return 200 instead of 401
+          res.json({
             success: false,
             message: "Token is invalid!"
           });
+          return res;
         }
 
         next();
       }
     });
   } else {
-    return res.json({
+    res.status(401)//BUG: used to return 200 instead of 401
+    res.json({
       success: false,
       message: "Authorization token is not supplied"
     });
+    return res;
   }
   // END
 

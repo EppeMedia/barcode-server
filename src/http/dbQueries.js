@@ -18,7 +18,7 @@ exports.registerUser = function(
     `INSERT INTO public.users(
         email, name, public_key, password_hash)
         VALUES ('${email}', '${name}', '${publicKey}', '${passwordHash}');`,
-    (error, results) => {
+    error => {
       if (error) {
         return callback(error);
       }
@@ -147,10 +147,12 @@ exports.registerBarcodes = function(barcodes, batchID, callback) {
     }
   });
 
+  const query = `INSERT INTO public.barcodes(
+    barcode, batch)
+    VALUES ${insert};`;
+
   pool.query(
-    `INSERT INTO public.barcodes(
-                barcode, batch)
-                VALUES ${insert};`,
+    query,
     (error, results) => {
       return callback(error, results);
     }
@@ -226,7 +228,7 @@ exports.getTokens = function(userID, callback) {
 exports.getBarcodes = function(barcodes, callback) {
   let condition = ``;
   barcodes.map((barcode, i) => {
-    condition += ` barcode = ${barcode}`;
+    condition += ` barcode = '${barcode}'`;
 
     if (i !== barcodes.length - 1) {
       // Not the last element yet
@@ -234,10 +236,12 @@ exports.getBarcodes = function(barcodes, callback) {
     }
   });
 
+  const query = `SELECT barcode FROM barcodes WHERE ${condition} LIMIT ${barcodes.length}`;
+
   pool.query(
-    `SELECT barcode FROM barcodes WHERE ${condition} LIMIT ${barcodes.length}`,
+    query,
     (error, results) => {
-      return callback(error, results.rows);
+      return callback(error, results ? results.rows : []);
     }
   );
 };
@@ -272,7 +276,7 @@ exports.getLeaseUsage = function(leaseID, callback) {
     `,
     (error, results) => {
       let usage;
-      if (!error && results.rows.length > 0) { //bug wrong column name, new query has no alias.
+      if (!error && results.rows.length > 0) { // bug wrong column name, new query has no alias.
         usage = results.rows[0].count;
       }
       return callback(error, usage);

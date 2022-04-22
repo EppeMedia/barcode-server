@@ -72,7 +72,7 @@ exports.registerUser = function(req, res, dun) {
             // Successfully registered user!
             const result = {
               message: "Successfully registered user!",
-              privateKey: keyPair.privateKey
+              privateKey: keyPair.privateKey,
             };
 
             res.status(200);

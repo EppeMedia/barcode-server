@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS public.permissions
 CREATE TABLE IF NOT EXISTS public.barcodes
 (
     id serial,
-    barcodes character varying,
+    barcode character varying,
     batch bigint,
     PRIMARY KEY (id),
     CONSTRAINT batch_fk FOREIGN KEY(batch) REFERENCES public.batches(id)

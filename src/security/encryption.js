@@ -44,10 +44,15 @@ exports.signMessage = function(message, privateKey, passphrase) {
   const sign = crypto.createSign("SHA256");
   sign.update(message);
   sign.end();
-  const signature = sign.sign({
+
+  const params = {
     key: privateKey,
-    passphrase
-  });
+  };
+
+  if (passphrase)
+    params.passphrase = passphrase;
+
+  const signature = sign.sign(params);
 
   return signature.toString("hex");
 };
